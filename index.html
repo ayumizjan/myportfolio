@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="th">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>Supalak Threemek</title>
+	<link href="style.css" rel="stylesheet" type="text/css">
+	<style type="text/css">
+	</style>
+</head>
+
+<body>
+	
+	<header id="main-header">
+		<div class="super-box">Supalak T.</div>
+			<nav class="navLinks">
+  				<div class="hamburger" id="hamburger">
+    				<span></span>
+   					 <span></span>
+   				 	<span></span>
+  				</div>
+
+  				<ul class="nav-links" id="nav-links">
+    				<li><a href="javascript:void(0)" onclick="goToPage(1)">Home</a></li>
+    				<li><a href="javascript:void(0)" onclick="goToPage(3)">about</a></li>
+    				<li><a href="javascript:void(0)" onclick="goToPage(5)">contact</a></li>
+  				</ul>
+			</nav>
+	</header>
+
+	<main class="main-container">
+		<aside class="box-a">
+			<article class="video-step" id="a1">
+    			<video src="clip1.mp4" type="video/webm" loop muted playsinline preload="auto"></video>
+			</article>
+    		<article class="video-step" id="a3">
+        		<video src="clip3.mp4" type="video/webm" loop muted playsinline preload="auto"></video>
+    		</article>
+			<article class="video-step" id="a5">
+        		<video src="clip5.mp4" type="video/webm" muted playsinlin preload="auto"></video>
+			</article>
+
+    		<article class="video-step" id="a2">
+        		<video src="clip2.mp4" type="video/webm" muted playsinline preload="auto"></video>
+    		</article>
+			<article class="video-step" id="a4">
+        		<video src="clip4.mp4" type="video/webm" muted playsinline preload="auto"></video>
+			</article>
+
+    		<article class="video-step" id="a6">
+        		<video src="clip2re.mp4" type="video/webm" muted playsinline preload="auto"></video>
+    		</article>
+			<article class="video-step" id="a7">
+        		<video src="clip4re.mp4" type="video/webm" muted playsinline preload="auto"></video>
+			</article>
+		</aside>
+
+		<section class="box-b">
+			<div class="text-wrap">
+				<article class="page" id="p1">
+					<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+					<h1>Welcome to my world </h1>
+					<p>Where magic meets the inanimate, I bring life.</p>
+    			</article>
+	
+				<article class="page" id="p3">
+      				<p style="text-indent: 2.5em;">In the year 1991, among the misty mountains of Northern Thailand,
+						a girl named Supalak was born. Growing up as an only child in the 
+						warm embrace of her single mother, she discovered a world that others 
+						often missed. From the moment she could first hold a pencil,
+						she was enchanted by the art of drawing. In the quiet solitude of her childhood, 
+						she mastered the art of observation, imagining a world where every still object 
+						could breathe and move, secretly practicing the magic of bringing 
+						the inanimate to life.</p>
+					<p style="text-indent: 2.5em;">This lifelong passion led her to Mae Fah Luang university with Bachelor of Science Program in 
+						Multimedia Technology and Animation, turning her natural curiosity into professional mastery. 
+						Her journey soon took her into the fast-paced world of advertising. In 2014, 
+						her talent was recognized on a global stage when she was entrusted with two 
+						major projects that were shortlisted at the Cannes Lions. It was a defining 
+						moment, proving that the silent dreams of a girl from the mountains could 
+						capture the heart of the world.</p>
+					<p style="text-indent: 2.5em;">Now, She continues to push the boundaries of visual storytelling as a Motion Graphic 
+						and Animation Specialist. While she remains a respected voice in the advertising 
+						industry, she is now seeking new horizons to explore. With a heart rooted in 
+						creativity and a mind fueled by technology, she is ready to bring her unique 
+						"magic" to the tech, gaming, animation, or film industries. She is looking for a 
+						team that values innovation and the art of making the world move, one frame at a time.</p>
+    			</article>
+			
+				<article class="page" id="p5">
+					<h2>Let's be friends! I'm all ears for your stories :)</h2>
+					<p>Whisper your thoughts to me right here.</p>
+					<form class="form" id="my-form">
+						<input type="text" name="name" placeholder="name" required>
+						<input type="email" name="email" placeholder="email" required>
+						<textarea name="details" placeholder="messages" required></textarea>
+						<input type="text" name="honeypot" style="display:none" tabindex="-1" autocomplete="off">
+						<button type="submit" id="submit-btn">send</button>
+					</form>
+					<div id="form-status"></div>
+				</article>
+			</div>
+ 		</section>
+
+			<div id="scroll-road" style="height: 600vh;"></div>
+
+	</main>
+
+		<footer class="social-footer sticky-footer" id="fixed-footer">
+    			<div class="social-icons">
+					<h5>Follow My Journey</h5>
+       				<a href="https://facebook.com/PMEdisappear" target="_blank" class="icon-link"><i class="fab fa-facebook"></i></a>
+        			<a href="https://instagram.com/ayumizjan" target="_blank" class="icon-link"><i class="fab fa-instagram"></i></a>
+					<a href="https://line.me/ti/p/ayumizjan" target="_blank" class="icon-link"><i class="fab fa-line"></i></a>
+					<p class="copyright">© 2025 PALMIEZ. All rights reserved.</p>    			
+				</div>
+		</footer>
+	
+	<div id="step0" class="loading-overlay">
+			<h1>LOADING...</h1>
+	</div>
+
+	<div id="error-popup" class="error-overlay">
+    	<div class="error-box">
+        	<div class="error-icon">!</div>
+        	<h2>Access Denied</h2>
+       		<p>Shhh.. This treasure is for your eyes only!  <br>Let's keep the magic right where it is!</p>
+        	<button onclick="closeError()">Noted</button>
+    	</div>
+	</div>
+
+	<script src="script.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+	<div id="scroll-hint" class="scroll-indicator">
+		<p>Scroll down</p>
+		<div class="mouse">
+			<div class="wheel"></div>
+			<div class="arrow">
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div> 
+	
+</body>
+</html>
