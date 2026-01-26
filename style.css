@@ -561,6 +561,19 @@ video {
   pointer-events: none;
 }
 
+#a5.active {
+    display: block !important;
+    opacity: 1 !important;
+    z-index: 10; /* ดันขึ้นมาให้อยู่เหนือพื้นหลัง */
+}
+
+#a5 video {
+    pointer-events: none; /* ห้ามแตะเพื่อไม่ให้แถบวิดีโอขึ้น */
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
 .project-box{
 	margin: 20px;
 	padding: 50px;
