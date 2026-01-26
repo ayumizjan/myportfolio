@@ -36,68 +36,58 @@ function goToPage(stepNum) {
 let currentStep = 0; 
 
 function updateLayer(stepNum) {
-    // กำหนดทิศทาง (เช็คว่า step ใหม่ มากกว่าหรือน้อยกว่า step ปัจจุบัน)
-    const isScrollingDown = stepNum > currentStep;
-    
-    // 1. จัดการ Layer หน้าและวิดีโอ (Reset State)
-    document.querySelectorAll('.page, .video-step').forEach(el => el.classList.remove('active'));
-    
+    // 1. เคลียร์หน้าเก่า (ลบ Active ออกจากทุกหน้า)
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.video-step').forEach(v => v.classList.remove('active'));
+
+    // 2. เปิดหน้าที่เราอยู่ปัจจุบัน
     const activePage = document.getElementById(`p${stepNum}`);
     const activeVidCont = document.getElementById(`a${stepNum}`);
     if (activePage) activePage.classList.add('active');
     if (activeVidCont) activeVidCont.classList.add('active');
 
+    // 3. จัดการวิดีโอแต่ละหน้า
     const videoTag = activeVidCont ? activeVidCont.querySelector('video') : null;
-    if (!videoTag) return;
 
-    // 2. ตั้งค่าพื้นฐานวิดีโอ
-    videoTag.muted = true;
-    videoTag.style.display = 'block'; // มั่นใจว่าวิดีโอไม่ถูกซ่อน
-    if (document.getElementById('final-image')) document.getElementById('final-image').style.display = 'none';
+    if (videoTag) {
+        videoTag.muted = true;
+        videoTag.currentTime = 0; // ให้เริ่มเล่นใหม่ทุกครั้งที่เลื่อนมาถึง
+        
+        // 🌟 สั่งเล่นวิดีโอ (ถ้าเล่นไม่ได้ให้แจ้ง Error ใน Console)
+        videoTag.play().catch(e => console.log("Play error on step " + stepNum));
 
-    // 3. เงื่อนไขเฉพาะตามลำดับที่คุณวางไว้
-    if (isScrollingDown) {
-        // --- (1) ขาลง (Forward Flow) ---
-        videoTag.currentTime = 0; // เริ่มใหม่จากต้น
-        videoTag.play();
-
-        if (stepNum === 2 || stepNum === 4) {
-            videoTag.loop = false;
+        // --- ส่วนที่ 1: การจัดการหน้า 1-4 (กู้คืนของเดิม) ---
+        if (stepNum < 5) {
+            if (stepNum === 2 || stepNum === 4) {
+                videoTag.loop = false;
+                videoTag.onended = () => {
+                    currentStep = stepNum + 1;
+                    updateLayer(currentStep);
+                };
+            } else {
+                videoTag.loop = true; // หน้า 1, 3 ให้เล่นวนลูปปกติ
+                videoTag.onended = null;
+            }
+        } 
+        // --- ส่วนที่ 2: การจัดการหน้า 5 (แยกหน้าที่ชัดเจน) ---
+        else if (stepNum === 5) {
+            const img5 = document.getElementById('final-image');
+            videoTag.loop = false; // เล่นครั้งเดียวแล้วจบ
+            
+            // เมื่อเล่นจบ สลับโชว์รูปภาพ (ถ้ามีรูปภาพเตรียมไว้)
             videoTag.onended = () => {
-                currentStep = stepNum + 1;
-                updateLayer(currentStep);
+                videoTag.style.display = 'none'; // ซ่อนวิดีโอ
+                if (img5) img5.style.display = 'block'; // โชว์รูป
             };
-        } else if (stepNum === 5) {
-            videoTag.loop = false;
-            videoTag.onended = () => {
-                videoTag.style.display = 'none';
-                const img5 = document.getElementById('final-image');
-                if (img5) img5.style.display = 'block';
-            };
-        } else {
-            videoTag.loop = true; // หน้า 1, 3
-            videoTag.onended = null;
-        }
-    } else {
-        // --- (2) ขาขึ้น (Backward Flow) ---
-        // สำหรับหน้า 2 และ 4 ในขาขึ้น (ต้องการให้เล่นถอยหลังหรือเล่นใหม่จากต้นก็ได้ตามความเหมาะสม)
-        videoTag.currentTime = 0; 
-        videoTag.play();
-
-        if (stepNum === 2 || stepNum === 4) {
-            videoTag.loop = false;
-            videoTag.onended = () => {
-                // ขาขึ้น เมื่อวิดีโอเปลี่ยนผ่าน (2 หรือ 4) จบ ให้ถอยไปหน้าคี่ (1 หรือ 3)
-                currentStep = stepNum - 1;
-                updateLayer(currentStep);
-            };
-        } else if (stepNum === 5) {
-            videoTag.loop = false; // เล่นหน้า 5 อีกรอบแล้วจบ (หรือจะตั้งให้ถอยไป 4 เลยก็ได้)
-        } else {
-            videoTag.loop = true; // หน้า 1, 3 (Loop ปกติ)
-            videoTag.onended = null;
         }
     }
+    // (conclusion) follow my journey
+const footer = document.querySelector('.sticky-footer');
+if (stepNum === 5) {
+    footer.classList.add('show');
+} else {
+    footer.classList.remove('show');
+}
 }
 
 window.addEventListener('scroll', () => {

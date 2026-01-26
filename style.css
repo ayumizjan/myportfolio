@@ -443,79 +443,65 @@ input, textarea {
   box-shadow: 0 10px 20px rgba(0,0,0,0.3)
 }
 
+/* follow my journey */
+
 /* sticky full bottom */
 .sticky-footer {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
+    font-family: 'Roboto', sans-serif;
     position: fixed;
-    bottom: 50px;
+    bottom: 40px; /* ระยะห่างจากด้านล่าง */
     left: 50%;
-    transform: translateX(-50%) translateY(40px); /* ดันลงไปนิดนึงเตรียมลอยขึ้น */
-    z-index: 11000; /* อยู่หน้าเนื้อหาแต่หลังเมนู Hamburger */
+    transform: translateX(-50%); 
+    z-index: 99999; /* เลขสูงสุดเพื่อให้อยู่เหนือรูปภาพและวิดีโอ */
     text-align: center;
+    width: auto;
     
-    /* hide */
+    /* ควบคุมการแสดงผล */
     opacity: 0;
     visibility: hidden;
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: all 0.8s ease;
 }
 
-/* show up when scroll to p5 (JS) */
+/* แสดงผลเมื่อ JS สั่งเพิ่มคลาส .show */
 .sticky-footer.show {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(0); /* ลอยขึ้นมาที่ตำแหน่งเดิม */
 }
 
+/* กล่องไอคอน - สไตล์กระจกฝ้า (Glassmorphism) */
 .social-icons {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    background: rgba(255, 255, 255, 0.9); /* พื้นหลังกระจกฝ้า */
-    padding: 18px 45px;
-    border-radius: 60px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.copyright {
-    font-size: 0.7rem;
-    color: #888;
-    margin-top: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* icon social style */
-.social-footer {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin-top: 30px;
-  padding: 20px;
-}
-
-.social-icons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 15px;
+    gap: 25px;
+    background: rgba(255, 255, 255, 0.95); /* ขาวเกือบสนิทเพื่อให้เด่นเหนือวิดีโอ */
+    padding: 12px 35px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
 }
 
 .icon-link {
-    font-size: 28px;      /* ขนาดไอคอน */
-    color: #444;          /* สีเริ่มต้น (เทาเข้ม) */
-    transition: all 0.3s ease;
+    font-size: 24px;
+    color: #222; /* สีเข้มเพื่อให้ตัดกับพื้นขาว */
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
-/* เอฟเฟกต์ตอนเอาเมาส์ชี้ - เปลี่ยนสีตามแบรนด์ */
 .icon-link:hover {
-    transform: translateY(-5px); /* ลอยขึ้นเล็กน้อย */
+    transform: translateY(-5px);
 }
 
-.fa-facebook:hover { color: #1877F2; }
-.fa-instagram:hover { color: #E4405F; }
-.fa-line:hover { color: #06C755; }
+/* สีไอคอนเมื่อ Hover */
+.fa-facebook:hover { color: #1877f2; }
+.fa-instagram:hover { color: #e4405f; }
+.fa-line:hover { color: #06c755; }
+
+.copyright {
+    font-size: 0.65rem;
+    color: #004058; 
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
 
 .video-step, .page {
   position: absolute;
