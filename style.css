@@ -343,6 +343,22 @@ input, textarea {
   background-color: #fff;
 }
 
+#p5.active, #a5.active {
+    display: block !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+}
+
+#a5 video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block; /* มั่นใจว่าไม่ถูกสั่งซ่อน */
+}
+
+/* ปิดพื้นหลังสีน้ำเงินหรือสีอื่นๆ ที่เราเคยลองแก้ไว้ */
+#a5 { background: transparent !important; }
+
 /* กล่องแม่ */
 .form {
   display: flex;
@@ -557,7 +573,7 @@ input, textarea {
 #a5.active {
     display: block !important;
     opacity: 1 !important;
-    z-index: 10; /* ดันขึ้นมาให้อยู่เหนือพื้นหลัง */ 
+    z-index: 60; /* ดันขึ้นมาให้อยู่เหนือพื้นหลัง */ 
 } 
 
 #a5 {

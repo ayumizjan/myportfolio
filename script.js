@@ -36,77 +36,59 @@ function goToPage(stepNum) {
 let currentStep = 0; 
 
 function updateLayer(stepNum) {
-    console.log("--- สั่งงาน Step: " + stepNum + " ---");
-    
-    // 1. จัดการหน้า Page (คงเดิม)
-    const allPages = document.querySelectorAll('.page');
-    allPages.forEach(page => page.classList.remove('active'));
-    
-    const activePage = document.getElementById(`p${stepNum}`); 
-    if (activePage) { 
-        activePage.classList.add('active');
-        activePage.scrollTop = 0; 
-    }
-
-    // 2. จัดการวิดีโอ (ส่วนที่เราจะซ่อมให้ Safari)
-    const allVids = document.querySelectorAll('.video-step');
-    allVids.forEach(vid => {
-        vid.classList.remove('active');
-        const v = vid.querySelector('video');
-        if(v) v.pause(); 
+    // 1. ปิดหน้าเก่าและวิดีโอเก่าทั้งหมดก่อน (Reset State)
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.video-step').forEach(v => {
+        v.classList.remove('active');
+        const vid = v.querySelector('video');
+        if(vid) vid.pause();
     });
 
-    const activeVid = document.getElementById(`a${stepNum}`); 
-    if (activeVid) {
-        activeVid.classList.add('active');
-        const videoTag = activeVid.querySelector('video');
-        if (videoTag) {
-            videoTag.muted = true; // บังคับปิดเสียง
-            videoTag.currentTime = 0;
-            
-            // 🌟 ไม้ตาย: บังคับโหลด Metadata ใหม่ทุกครั้งที่เปลี่ยนหน้า
-            videoTag.load(); 
-            
-            videoTag.play().catch(e => {
-                console.log("Safari Play Error:", e);
-                // ถ้าโดนบล็อก ให้พยายามเล่นอีกครั้งเมื่อมีการขยับ
-                window.addEventListener('touchstart', () => videoTag.play(), {once: true});
+    // 2. เปิดหน้าที่เราเลื่อนไปถึง
+    const activePage = document.getElementById(`p${stepNum}`);
+    const activeVidCont = document.getElementById(`a${stepNum}`);
+    
+    if (activePage) activePage.classList.add('active');
+    if (activeVidCont) activeVidCont.classList.add('active');
+
+    // 3. จัดการวิดีโอหน้า 5 โดยเฉพาะ (Logic ใหม่ที่คุณต้องการ)
+    if (stepNum === 5) {
+        const v5 = document.getElementById('final-video');
+        const img5 = document.getElementById('final-image');
+        
+        if (v5 && img5) {
+            img5.style.display = 'none'; // ซ่อนรูปก่อน
+            v5.style.display = 'block';  // โชว์วิดีโอ
+            v5.currentTime = 0;
+            v5.load();
+            v5.play().catch(e => {
+                // ถ้าวิดีโอพัง (จอขาว) ให้สลับโชว์รูปทันที
+                v5.style.display = 'none';
+                img5.style.display = 'block';
             });
 
-            if (stepNum === 2 || stepNum === 4) {
-                videoTag.loop = false;
-                videoTag.onended = () => {
-                    const nextStep = stepNum + 1;
-                    updateLayer(nextStep);
-                    currentStep = nextStep;
-                };
-            } else if (stepNum === 5) {
-                const videoTag = activeVid.querySelector('video');
-                const imageTag = activeVid.querySelector('img');
-    
-             if (videoTag && imageTag) {
-                     // 1. ซ่อนรูปภาพก่อนเพื่อให้เห็นวิดีโอเริ่มเล่น
-                 imageTag.style.display = 'none';
-        
-                videoTag.loop = false;
-                videoTag.currentTime = 0;
-                videoTag.play();
-
-                    // 2. เมื่อวิดีโอเล่นจบ ให้โชว์รูปภาพขึ้นมาทับทันที
-                 videoTag.onended = () => {
-                 imageTag.style.display = 'block';
-                videoTag.pause(); // หยุดวิดีโอไว้เบื้องหลัง
+            v5.onended = () => {
+                v5.style.display = 'none'; // วิดีโอจบปุ๊บ ซ่อน
+                img5.style.display = 'block'; // รูปโผล่ทันที
             };
-    }
-}
         }
-    }
-
-    // 3. จัดการ Footer (คงเดิม)
-    const fixedFooter = document.getElementById('fixed-footer');
-    if (fixedFooter) {
-        if (stepNum === 5) fixedFooter.classList.add('show');
-        else fixedFooter.classList.remove('show');
+    } else {
+        // หน้า 1-4 ให้เล่นปกติเหมือนเดิม
+        const currentVid = activeVidCont ? activeVidCont.querySelector('video') : null;
+        if (currentVid) {
+            currentVid.muted = true;
+            currentVid.play();
+            // ถ้าเป็นหน้า 2 หรือ 4 ให้เล่นครั้งเดียวแล้วไปหน้าถัดไป (ตามเดิมของคุณ)
+            if (stepNum === 2 || stepNum === 4) {
+                currentVid.loop = false;
+                currentVid.onended = () => {
+                    currentStep = stepNum + 1;
+                    updateLayer(currentStep);
+                };
+            } else {
+                currentVid.loop = true;
+            }
+        }
     }
 }
 
