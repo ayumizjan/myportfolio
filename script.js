@@ -38,7 +38,7 @@ let currentStep = 0;
 function updateLayer(stepNum) {
     console.log("--- สั่งงาน Step: " + stepNum + " ---");
     
-    // 1. จัดการหน้า Page (Text Content)
+    // 1. จัดการหน้า Page (คงเดิม)
     const allPages = document.querySelectorAll('.page');
     allPages.forEach(page => page.classList.remove('active'));
     
@@ -48,7 +48,7 @@ function updateLayer(stepNum) {
         activePage.scrollTop = 0; 
     }
 
-    // 2. จัดการวิดีโอ (Seamless Transition)
+    // 2. จัดการวิดีโอ (ส่วนที่เราจะซ่อมให้ Safari)
     const allVids = document.querySelectorAll('.video-step');
     allVids.forEach(vid => {
         vid.classList.remove('active');
@@ -61,45 +61,52 @@ function updateLayer(stepNum) {
         activeVid.classList.add('active');
         const videoTag = activeVid.querySelector('video');
         if (videoTag) {
+            videoTag.muted = true; // บังคับปิดเสียง
             videoTag.currentTime = 0;
-            videoTag.play().catch(e => console.log("Video play error:", e));
+            
+            // 🌟 ไม้ตาย: บังคับโหลด Metadata ใหม่ทุกครั้งที่เปลี่ยนหน้า
+            videoTag.load(); 
+            
+            videoTag.play().catch(e => {
+                console.log("Safari Play Error:", e);
+                // ถ้าโดนบล็อก ให้พยายามเล่นอีกครั้งเมื่อมีการขยับ
+                window.addEventListener('touchstart', () => videoTag.play(), {once: true});
+            });
 
-            // ตรวจสอบว่าเป็นวิดีโอทางผ่าน (Bridge) หรือไม่
             if (stepNum === 2 || stepNum === 4) {
-                videoTag.loop = false; // เล่นรอบเดียว
+                videoTag.loop = false;
                 videoTag.onended = () => {
-                    // เมื่อจบวิดีโอ Bridge ให้ขยับไปหน้าเนื้อหาถัดไปทันที
                     const nextStep = stepNum + 1;
                     updateLayer(nextStep);
                     currentStep = nextStep;
                 };
             } else if (stepNum === 5) {
-                // 🌟 หน้าสุดท้าย: เล่นรอบเดียวแล้ว "หยุด"
-                videoTag.loop = false; 
-                videoTag.onended = null; // ไม่ต้องไปไหนต่อ
-                videoTag.muted = true; // บังคับปิดเสียงอีกรอบ
+                const videoTag = activeVid.querySelector('video');
+                const imageTag = activeVid.querySelector('img');
     
-                // บังคับให้โหลดและเล่นใหม่ทุกครั้งที่เลื่อนมาถึง
-                 videoTag.load(); 
-                 videoTag.play().catch(e => {
-                  console.log("Auto-play was prevented, trying again on scroll");
-                 });
-            } else {
-                // หน้าหลัก 1, 3, 5 ให้เล่นวนลูปไปเรื่อยๆ
-                videoTag.loop = true;
-                videoTag.onended = null; // ล้างคำสั่ง onended เดิมออก
-            }
+             if (videoTag && imageTag) {
+                     // 1. ซ่อนรูปภาพก่อนเพื่อให้เห็นวิดีโอเริ่มเล่น
+                 imageTag.style.display = 'none';
+        
+                videoTag.loop = false;
+                videoTag.currentTime = 0;
+                videoTag.play();
+
+                    // 2. เมื่อวิดีโอเล่นจบ ให้โชว์รูปภาพขึ้นมาทับทันที
+                 videoTag.onended = () => {
+                 imageTag.style.display = 'block';
+                videoTag.pause(); // หยุดวิดีโอไว้เบื้องหลัง
+            };
+    }
+}
         }
     }
 
-    // 3. จัดการ Footer (แสดงเฉพาะหน้าสุดท้าย p5)
+    // 3. จัดการ Footer (คงเดิม)
     const fixedFooter = document.getElementById('fixed-footer');
     if (fixedFooter) {
-        if (stepNum === 5) {
-            fixedFooter.classList.add('show');
-        } else {
-            fixedFooter.classList.remove('show');
-        }
+        if (stepNum === 5) fixedFooter.classList.add('show');
+        else fixedFooter.classList.remove('show');
     }
 }
 

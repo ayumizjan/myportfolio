@@ -521,13 +521,6 @@ input, textarea {
   }
 }
 
-/* dont touch video */
-video {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-
-}
-
 .video-step {
   position: absolute;
   border-radius: 8px;
@@ -564,14 +557,31 @@ video {
 #a5.active {
     display: block !important;
     opacity: 1 !important;
-    z-index: 10; /* ดันขึ้นมาให้อยู่เหนือพื้นหลัง */
+    z-index: 10; /* ดันขึ้นมาให้อยู่เหนือพื้นหลัง */ 
+} 
+
+#a5 {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    /* z-index: 1 !important; /* ให้อยู่ล่างสุดของเนื้อหา */
 }
 
 #a5 video {
-    pointer-events: none; /* ห้ามแตะเพื่อไม่ให้แถบวิดีโอขึ้น */
-    object-fit: cover;
+  pointer-events: none; /* dont touch screen */
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.static-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    object-fit: cover;
+    z-index: 5; /* ให้อยู่เหนือวิดีโอเมื่อสั่งโชว์ */
 }
 
 .project-box{
