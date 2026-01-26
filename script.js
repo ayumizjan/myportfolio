@@ -36,58 +36,66 @@ function goToPage(stepNum) {
 let currentStep = 0; 
 
 function updateLayer(stepNum) {
-    // 1. ปิดหน้าเก่าและวิดีโอเก่าทั้งหมดก่อน (Reset State)
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.video-step').forEach(v => {
-        v.classList.remove('active');
-        const vid = v.querySelector('video');
-        if(vid) vid.pause();
-    });
-
-    // 2. เปิดหน้าที่เราเลื่อนไปถึง
+    // กำหนดทิศทาง (เช็คว่า step ใหม่ มากกว่าหรือน้อยกว่า step ปัจจุบัน)
+    const isScrollingDown = stepNum > currentStep;
+    
+    // 1. จัดการ Layer หน้าและวิดีโอ (Reset State)
+    document.querySelectorAll('.page, .video-step').forEach(el => el.classList.remove('active'));
+    
     const activePage = document.getElementById(`p${stepNum}`);
     const activeVidCont = document.getElementById(`a${stepNum}`);
-    
     if (activePage) activePage.classList.add('active');
     if (activeVidCont) activeVidCont.classList.add('active');
 
-    // 3. จัดการวิดีโอหน้า 5 โดยเฉพาะ (Logic ใหม่ที่คุณต้องการ)
-    if (stepNum === 5) {
-        const v5 = document.getElementById('final-video');
-        const img5 = document.getElementById('final-image');
-        
-        if (v5 && img5) {
-            img5.style.display = 'none'; // ซ่อนรูปก่อน
-            v5.style.display = 'block';  // โชว์วิดีโอ
-            v5.currentTime = 0;
-            v5.load();
-            v5.play().catch(e => {
-                // ถ้าวิดีโอพัง (จอขาว) ให้สลับโชว์รูปทันที
-                v5.style.display = 'none';
-                img5.style.display = 'block';
-            });
+    const videoTag = activeVidCont ? activeVidCont.querySelector('video') : null;
+    if (!videoTag) return;
 
-            v5.onended = () => {
-                v5.style.display = 'none'; // วิดีโอจบปุ๊บ ซ่อน
-                img5.style.display = 'block'; // รูปโผล่ทันที
+    // 2. ตั้งค่าพื้นฐานวิดีโอ
+    videoTag.muted = true;
+    videoTag.style.display = 'block'; // มั่นใจว่าวิดีโอไม่ถูกซ่อน
+    if (document.getElementById('final-image')) document.getElementById('final-image').style.display = 'none';
+
+    // 3. เงื่อนไขเฉพาะตามลำดับที่คุณวางไว้
+    if (isScrollingDown) {
+        // --- (1) ขาลง (Forward Flow) ---
+        videoTag.currentTime = 0; // เริ่มใหม่จากต้น
+        videoTag.play();
+
+        if (stepNum === 2 || stepNum === 4) {
+            videoTag.loop = false;
+            videoTag.onended = () => {
+                currentStep = stepNum + 1;
+                updateLayer(currentStep);
             };
+        } else if (stepNum === 5) {
+            videoTag.loop = false;
+            videoTag.onended = () => {
+                videoTag.style.display = 'none';
+                const img5 = document.getElementById('final-image');
+                if (img5) img5.style.display = 'block';
+            };
+        } else {
+            videoTag.loop = true; // หน้า 1, 3
+            videoTag.onended = null;
         }
     } else {
-        // หน้า 1-4 ให้เล่นปกติเหมือนเดิม
-        const currentVid = activeVidCont ? activeVidCont.querySelector('video') : null;
-        if (currentVid) {
-            currentVid.muted = true;
-            currentVid.play();
-            // ถ้าเป็นหน้า 2 หรือ 4 ให้เล่นครั้งเดียวแล้วไปหน้าถัดไป (ตามเดิมของคุณ)
-            if (stepNum === 2 || stepNum === 4) {
-                currentVid.loop = false;
-                currentVid.onended = () => {
-                    currentStep = stepNum + 1;
-                    updateLayer(currentStep);
-                };
-            } else {
-                currentVid.loop = true;
-            }
+        // --- (2) ขาขึ้น (Backward Flow) ---
+        // สำหรับหน้า 2 และ 4 ในขาขึ้น (ต้องการให้เล่นถอยหลังหรือเล่นใหม่จากต้นก็ได้ตามความเหมาะสม)
+        videoTag.currentTime = 0; 
+        videoTag.play();
+
+        if (stepNum === 2 || stepNum === 4) {
+            videoTag.loop = false;
+            videoTag.onended = () => {
+                // ขาขึ้น เมื่อวิดีโอเปลี่ยนผ่าน (2 หรือ 4) จบ ให้ถอยไปหน้าคี่ (1 หรือ 3)
+                currentStep = stepNum - 1;
+                updateLayer(currentStep);
+            };
+        } else if (stepNum === 5) {
+            videoTag.loop = false; // เล่นหน้า 5 อีกรอบแล้วจบ (หรือจะตั้งให้ถอยไป 4 เลยก็ได้)
+        } else {
+            videoTag.loop = true; // หน้า 1, 3 (Loop ปกติ)
+            videoTag.onended = null;
         }
     }
 }
