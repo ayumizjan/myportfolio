@@ -10,6 +10,9 @@
   background-color: #aa8805;
   padding: 8px 20px;
   display: inline-block;
+  transform: skewX(-5deg) rotate(-2deg);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+  margin-bottom: 25px;
   font-family: 'Futura', sans-serif;
   font-weight: 900;
   font-style: italic;
@@ -17,7 +20,7 @@
   font-size: 1.8rem;
   letter-spacing: -1.5px;
   line-height: 1;
-  mmargin: 0;
+  margin: 0;
 }
 /*ห้ามคลุมดำ*/
 body {
@@ -498,10 +501,6 @@ input, textarea {
 .fa-instagram:hover { color: #E4405F; }
 .fa-line:hover { color: #06C755; }
 
-video {
-    object-fit: cover; /* always full screen */
-}
-
 .video-step, .page {
   position: absolute;
   top: 10px;
@@ -517,6 +516,16 @@ video {
   height: 100%;
   object-fit: cover;
   display: block;
+ -webkit-media-controls {
+  display: none !important;
+  }
+}
+
+/* dont touch video */
+video {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+
 }
 
 .video-step {
